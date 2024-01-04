@@ -1,42 +1,55 @@
-import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import React, {useState} from 'react';
+import {Box, ChakraProvider, Divider, Input, Stack, Textarea, theme, Grid} from '@chakra-ui/react';
+import {ColorModeSwitcher} from './ColorModeSwitcher';
+import {RatingSubmit} from "./RatingSubmit";
 
 function App() {
-  return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
-  );
+    let [height, setHeight] = useState(100);
+    let [title, setTitle] = useState("");
+    let [text, setText] = useState("");
+    let [stars, setStars] = useState(null)
+
+    const handleTextareaChange = (event) => {
+        setText(event.target.value)
+        setHeight(event.target.scrollHeight)
+        const starRegex = new RegExp('I give '+title+', ([0|1|2|3|4|5](?:\\.5)?) stars?\\.', 'i')
+        const matches = event.target.value.match(starRegex)
+        if (matches){
+            setStars(parseFloat(matches[1]))
+        } else {
+            setStars(null)
+        }
+    }
+
+    return (
+        <ChakraProvider theme={theme}>
+            <Box fontSize="xl" p={4}>
+                <Grid>
+                    <ColorModeSwitcher justifySelf="flex-end"/>
+                </Grid>
+                <Stack>
+                    <Input
+                        placeholder={"What will you write about today?"}
+                        variant={'unstyled'}
+                        size={'xl'}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <Divider/>
+                    <Textarea
+                        placeholder={"Once upon a time..."}
+                        variant={'unstyled'}
+                        resize={'none'}
+                        height={height}
+                        overflowY={'hidden'}
+                        onChange={handleTextareaChange}
+                        value={text}
+                    />
+                    <RatingSubmit stars={stars}/>
+                </Stack>
+            </Box>
+        </ChakraProvider>
+    );
 }
 
 export default App;
