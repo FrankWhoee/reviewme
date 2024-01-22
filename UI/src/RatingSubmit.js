@@ -18,6 +18,9 @@ import {StarIcon} from '@chakra-ui/icons'
 export const RatingSubmit = props => {
     let rating = props.stars;
     let title = props.title;
+    let email = props.email;
+    let onChange = props.onChange;
+    let onSubmit = props.onSubmit;
 
     if (!rating || !title){
         return null;
@@ -35,7 +38,8 @@ export const RatingSubmit = props => {
         <Box {...props}>
                 <HStack>
                     {starIcons}
-                    <Button ml={5}>Review {title}</Button>
+                    <Input ml={5} placeholder={"Your email address"} maxWidth={200} value={email} onChange={onChange}/>
+                    <Button ml={5} onClick={onSubmit}>Review {title} as {email}</Button>
                 </HStack>
 
         </Box>

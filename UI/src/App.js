@@ -8,15 +8,21 @@ function App() {
 
     let ltitle = localStorage.getItem("title") ?? ""
     let ltext = localStorage.getItem("text") ?? ""
+    let lemail = localStorage.getItem("email") ?? ""
     let [title, setTitle] = useState(ltitle);
     let [text, setText] = useState(ltext);
+    let [email, setEmail] = useState(lemail);
 
     const starRegex = new RegExp('I give ' + ltitle + ', ([0|1|2|3|4|5](?:\\.5)?) stars?\\.', 'i')
     const matches = ltext.match(starRegex)
 
     let [stars, setStars] = useState(matches == null ? null : parseFloat(matches[1]))
 
-
+    const handleEmailChange = (event) => {
+        const value = event.target.value
+        setEmail(value)
+        localStorage.setItem("email", value)
+    }
 
     const handleTextareaChange = (event) => {
         const value = event.target.value
@@ -45,6 +51,21 @@ function App() {
         }
     }
 
+    function handleSubmit(){
+        fetch("http://localhost:8000/review", {
+            method: "POST",
+            body: JSON.stringify({
+                email: email,
+                title: title,
+                text: text,
+                rating: stars
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        });
+    }
+
     return (
         <ChakraProvider theme={theme}>
             <Box fontSize="xl" p={4}>
@@ -69,7 +90,7 @@ function App() {
                         onChange={handleTextareaChange}
                         value={text}
                     />
-                    <RatingSubmit stars={stars} title={title}/>
+                    <RatingSubmit stars={stars} title={title} email={email} onChange={handleEmailChange} onSubmit={handleSubmit}/>
                 </Stack>
             </Box>
         </ChakraProvider>
