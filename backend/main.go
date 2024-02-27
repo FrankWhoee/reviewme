@@ -1,20 +1,23 @@
 package main
 
 import (
+	// "context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"os"
+
+	// "cloud.google.com/go/firestore"
+	// firebase "firebase.google.com/go"
+	// "firebase.google.com/go/auth"
+
+	// "google.golang.org/api/option"
+
+	"reviewme/backend/fb"
+	"reviewme/backend/review"
 )
 
-type Review struct {
-	Email  string
-	Title  string
-	Text   string
-	Rating int
-}
+var db *fb.FbClient = new(fb.FbClient)
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -28,10 +31,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		body, _ := io.ReadAll(r.Body)
 		defer r.Body.Close()
-		fmt.Println(string(body))
-		var review Review
+		var review review.Review
 		json.Unmarshal(body, &review)
-		fmt.Printf("%s %s %s %d\n", review.Email, review.Title, review.Text, review.Rating)
+		err := db.Push(review)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
 	case http.MethodPut:
 		// Update an existing record.
 	case http.MethodDelete:
@@ -43,11 +48,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// func addReview(review *Review) {
+
+// }
+
 func main() {
-	// Check if reviews folder exists
-	if _, err := os.Stat("./reviews"); os.IsNotExist(err) {
-		os.Mkdir("./reviews", 0700)
-	}
+	db.New("/home/fhui/.gcreds/reviewme-af36c-firebase-adminsdk-490nn-b2e1ae3701.json")
+	defer db.Close()
 
 	http.HandleFunc("/review", handler)
 	log.Fatal(http.ListenAndServe(":8000", nil))
