@@ -40,6 +40,16 @@ func (f *FbClient) Push(review review.Review) error {
 func (f *FbClient) FetchByTitle(Title string) []review.Review {
 	ctx := context.Background()
 	docs, _ := f.fb.Collection("reviews").Where("Title", "==", Title).Documents(ctx).GetAll()
+	return extractCollectionAndSort(docs)
+}
+
+func (f *FbClient) FetchByEmail(Email string) []review.Review {
+	ctx := context.Background()
+	docs, _ := f.fb.Collection("reviews").Where("Email", "==", Email).Documents(ctx).GetAll()
+	return extractCollectionAndSort(docs)
+}
+
+func extractCollectionAndSort(docs []*firestore.DocumentSnapshot) []review.Review {
 	output := make([]review.Review, 0)
 	for _, doc := range docs {
 		output = append(output, *review.FromMap(doc.Data()))
