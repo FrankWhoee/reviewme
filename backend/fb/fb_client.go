@@ -3,6 +3,10 @@ package fb
 import (
 	"context"
 	"errors"
+	"slices"
+	"sort"
+
+	// "fmt"
 	"log"
 	"time"
 
@@ -19,18 +23,32 @@ type FbClient struct {
 
 func (f *FbClient) Push(review review.Review) error {
 	ctx := context.Background()
+	review.Timestamp = time.Now()
 	payload := review.Map()
 	if valid, err := review.IsValid(); !valid {
 		return errors.New("Review has an invalid " + err)
 	}
 
-	(*payload)["Timestamp"] = time.Now()
 	_, _, err := f.fb.Collection("reviews").Add(ctx, payload)
 
 	if err != nil {
 		log.Fatalf("Failed adding review: %v", err)
 	}
 	return nil
+}
+
+func (f *FbClient) FetchByTitle(Title string) []review.Review {
+	ctx := context.Background()
+	docs, _ := f.fb.Collection("reviews").Where("Title", "==", Title).Documents(ctx).GetAll()
+	output := make([]review.Review, 0)
+	for _, doc := range docs {
+		output = append(output, *review.FromMap(doc.Data()))
+	}
+	sort.Slice(output, func(i, j int) bool {
+		return output[i].Timestamp.Before(output[j].Timestamp)
+	})
+	slices.Reverse(output)
+	return output
 }
 
 func (f *FbClient) New(authFile string) {

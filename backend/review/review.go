@@ -2,6 +2,7 @@ package review
 
 import (
 	"regexp"
+	"time"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -11,6 +12,7 @@ type Review struct {
 	Title  string
 	Text   string
 	Rating int
+	Timestamp time.Time
 }
 
 func (r Review) Map() *map[string]interface{} {
@@ -18,6 +20,12 @@ func (r Review) Map() *map[string]interface{} {
 
 	mapstructure.Decode(r, &reviewMap)
 	return reviewMap
+}
+
+func FromMap(m map[string]interface{}) *Review {
+	var review *Review = new(Review)
+	mapstructure.Decode(m,review)
+	return review
 }
 
 func (r Review) IsValid() (bool,string) {
@@ -33,3 +41,5 @@ func (r Review) IsValid() (bool,string) {
 
 	return true, ""
 }
+
+

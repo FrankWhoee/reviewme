@@ -3,9 +3,11 @@ package main
 import (
 	// "context"
 	"encoding/json"
+	// "fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 
 	// "cloud.google.com/go/firestore"
 	// firebase "firebase.google.com/go"
@@ -27,7 +29,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		// Serve the resource.
+		myUrl, _ := url.Parse(r.RequestURI)
+		params, _ := url.ParseQuery(myUrl.RawQuery)
+		docs := db.FetchByTitle(params["Title"][0])
+		json.NewEncoder(w).Encode(docs)
+		w.WriteHeader(http.StatusAccepted)
+
 	case http.MethodPost:
 		body, _ := io.ReadAll(r.Body)
 		defer r.Body.Close()
