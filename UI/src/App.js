@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { extendTheme, Tab, Tabs, TabList, TabPanel, TabPanels, Box, ChakraProvider, Divider, Grid, Input, Stack, Textarea, theme, Center } from '@chakra-ui/react';
 import { RatingSubmit } from "./RatingSubmit";
+import {Profile} from "./Profile"
+import { Gallery } from './Gallery';
+
+import {fetchReviews, submitReview} from './API';
 
 function App() {
     let [height, setHeight] = useState(100);
@@ -50,20 +54,11 @@ function App() {
         }
     }
 
-    function handleSubmit() {
-        fetch("http://localhost:8000/review", {
-            method: "POST",
-            body: JSON.stringify({
-                email: email,
-                title: title,
-                text: text,
-                rating: stars
-            }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
-        });
+    function handleSubmit(){ 
+        submitReview(email, title, text, stars);
     }
+
+    
 
     // 2. Add your color mode config
     const config = {
@@ -111,10 +106,10 @@ function App() {
                         </Box>
                     </TabPanel>
                     <TabPanel>
-                        <p>two!</p>
+                        <Gallery/>
                     </TabPanel>
                     <TabPanel>
-                        <p>profile</p>
+                        <Profile/>
                     </TabPanel>
                 </TabPanels>
             </Tabs>
