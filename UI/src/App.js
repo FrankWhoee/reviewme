@@ -109,7 +109,7 @@ function App() {
                         <Gallery/>
                     </TabPanel>
                     <TabPanel>
-                        <Profile/>
+                        <Profile email={email} handleEmailChange={handleEmailChange}/>
                     </TabPanel>
                 </TabPanels>
             </Tabs>
