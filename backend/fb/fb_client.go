@@ -37,6 +37,12 @@ func (f *FbClient) Push(review review.Review) error {
 	return nil
 }
 
+func (f *FbClient) FetchAll() []review.Review {
+	ctx := context.Background()
+	docs, _ := f.fb.Collection("reviews").Documents(ctx).GetAll()
+	return extractCollectionAndSort(docs)
+}
+
 func (f *FbClient) FetchByTitle(Title string) []review.Review {
 	ctx := context.Background()
 	docs, _ := f.fb.Collection("reviews").Where("Title", "==", Title).Documents(ctx).GetAll()
