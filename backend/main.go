@@ -7,7 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"net/url"
+	// "net/url"
 
 	// "cloud.google.com/go/firestore"
 	// firebase "firebase.google.com/go"
@@ -29,10 +29,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		myUrl, _ := url.Parse(r.RequestURI)
-		params, _ := url.ParseQuery(myUrl.RawQuery)
-		docs := db.FetchByTitle(params["Title"][0])
-		json.NewEncoder(w).Encode(docs)
+		// myUrl, _ := url.Parse(r.RequestURI)
+		// params, _ := url.ParseQuery(myUrl.RawQuery)
+		// docs := db.FetchAll()
+		var a [2]review.Review
+		a[0].Text = `SAUSAGE CRUST
+		I had a blast making Pizza with my friends today. Eric and Sam's pizza were very mid.
+		
+		I WOULD give pizza 5 stars if we only had made the first 3, but cus of the last one,
+		I give pizza, 3 stars.`
+		a[0].Title = "Pizza"
+		a[0].Email = "joanne.jiwoo@gmail.com"
+		a[0].Rating = 3
+
+		a[1].Text = `WHAT ARE WE TO DO about the clichéd beauty of an ostentatious sunset? Should we cut it with menace, as Roberto Bolaño did so brilliantly, writing, “The sky at sunset looked like a carnivorous flower”? Should we lean in to the inherent sentimentality, as Kerouac does in On the Road when he writes, “Soon it got dusk, a grapy dusk, a purple dusk over tangerine groves and long melon fields . . . the fields the color of love and Spanish mysteries”? Or perhaps we should turn to mysticism, as Anna Akhmatova did when she wrote that in the face of a beautiful sunset,`
+
+		a[1].Title = "Sunsets"
+		a[1].Email = "johngreen@gmail.com"
+		a[1].Rating = 5
+		json.NewEncoder(w).Encode(a)
 		w.WriteHeader(http.StatusAccepted)
 
 	case http.MethodPost:
