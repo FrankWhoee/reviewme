@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { extendTheme, Tab, Tabs, TabList, TabPanel, TabPanels, Box, ChakraProvider, Divider, Grid, Input, Stack, Textarea, theme, Center } from '@chakra-ui/react';
+import { useDebounce } from 'use-debounce';
+
+import {fetchReviews, submitReview} from './API';
 import { RatingSubmit } from "./RatingSubmit";
 import {Profile} from "./Profile"
 import { Gallery } from './Gallery';
-
-import {fetchReviews, submitReview} from './API';
 
 function App() {
     let [height, setHeight] = useState(100);
@@ -14,7 +15,9 @@ function App() {
     let lemail = localStorage.getItem("email") ?? ""
     let [title, setTitle] = useState(ltitle);
     let [text, setText] = useState(ltext);
-    let [email, setEmail] = useState(lemail);
+
+    let [emailRaw, setEmail] = useState(lemail);
+    const [email] = useDebounce(emailRaw, 1000);
 
     const starRegex = new RegExp('I give ' + ltitle + ', ([0|1|2|3|4|5](?:\\.5)?) stars?\\.', 'i')
     const matches = ltext.match(starRegex)
@@ -101,7 +104,7 @@ function App() {
                                     onChange={handleTextareaChange}
                                     value={text}
                                 />
-                                <RatingSubmit stars={stars} title={title} email={email} onChange={handleEmailChange} onSubmit={handleSubmit} />
+                                <RatingSubmit stars={stars} title={title} email={email} emailRaw={emailRaw} onChange={handleEmailChange} onSubmit={handleSubmit} />
                             </Stack>
                         </Box>
                     </TabPanel>
@@ -109,7 +112,7 @@ function App() {
                         <Gallery/>
                     </TabPanel>
                     <TabPanel>
-                        <Profile email={email} handleEmailChange={handleEmailChange}/>
+                        <Profile email={email} emailRaw={emailRaw} handleEmailChange={handleEmailChange}/>
                     </TabPanel>
                 </TabPanels>
             </Tabs>

@@ -37,7 +37,10 @@ export const Rating = props => {
 export const RatingSubmit = props => {
     let rating = props.stars;
     let title = props.title;
+    
     let email = props.email;
+    let emailRaw = props.emailRaw;
+
     let onChange = props.onChange;
     let onSubmit = props.onSubmit;
 
@@ -49,8 +52,8 @@ export const RatingSubmit = props => {
         <Box {...props}>
             <HStack>
                 <Rating stars={rating} />
-                <Input ml={5} placeholder={"Your email address"} maxWidth={200} value={email} onChange={onChange} />
-                <Button ml={5} onClick={onSubmit}>Review {title} as {email}</Button>
+                <Input ml={5} placeholder={"Your email address"} maxWidth={200} value={emailRaw} onChange={onChange} />
+                <Button ml={5} onClick={onSubmit}>Review {title} as {emailRaw}</Button>
             </HStack>
 
         </Box>

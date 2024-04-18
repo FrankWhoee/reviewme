@@ -5,6 +5,7 @@ import { Gallery } from './Gallery'
 
 export const Profile = props => {
     let email = props.email;
+    let emailRaw = props.emailRaw;
 
     function handleEmailChange(event) {
         props.handleEmailChange(event);
@@ -15,7 +16,7 @@ export const Profile = props => {
         <>
             <Center>
                 <Box mb={5}>
-                    <Input placeholder={"Your email address"} maxWidth={300} value={email} onChange={handleEmailChange} />
+                    <Input placeholder={"Your email address"} maxWidth={300} value={emailRaw} onChange={handleEmailChange} />
                 </Box>
             </Center>
 
